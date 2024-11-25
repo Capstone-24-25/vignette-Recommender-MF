@@ -1,2 +1,2 @@
-# vignette-Recommender-SVD-RBM
-An overview and application of advanced recommender system algorithms including SVD and RBM
+# vignette-Recommender-MF
+An overview and application of advanced recommender system algorithm, Matrix Factorization
