@@ -8,9 +8,9 @@ Brian Lu, Candis Wu, Caitlyn Vasquez, Colin Nguyen, Carter Kulm
 
 
 # Repository Contents
-The dataset we will be working with is ...
-Our primary vignette document is ... 
-The script included in our repository is ...
+The data we will be working with is a set of Amazon electronic product reviews that includes a user ID, product ID, rating, and time stamp for each purchase. For our purposes we will not be using the time stamps. 
+The `vignette.qmd` file will serve as our group's primary vignette document and will include specific code chunks and their explanations that teach the reader about the matrix factorization method being shown. Selected results will be shown at the end of the document that illustrate the predictions given by the model. 
+The script included in our repository will contain all code used to build the model along with line-by-line annotations that make it easier to understand or replicate the methods put to use. The chunks included in the primary vignette document will be drawn from this script.
 
 # Reference List
 Reference 1: Zhang, A., Lipton, Z. C., Li, M., & Smola, A. J. (2021). Matrix factorization for recommender systems. *Dive into Deep Learning*. Retrieved from https://www.d2l.ai/chapter_recommender-systems/mf.html
