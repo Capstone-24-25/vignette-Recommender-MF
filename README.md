@@ -2,7 +2,7 @@
 An overview and application of advanced recommender system algorithm, Matrix Factorization
 
 # Contributors
-Brian Luki, Candis Wu, Caitlyn Vasquez, Colin Nguyen, Carter Kulm
+Brian Lu, Candis Wu, Caitlyn Vasquez, Colin Nguyen, Carter Kulm
 
 # Vignette Abstract
 
