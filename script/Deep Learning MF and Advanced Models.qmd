@@ -1,0 +1,344 @@
+---
+title: "PSTAT 197 Vignette - Recommender Systems MF"
+format: html
+---
+
+### 1. Setup and Data Preprocessing
+
+```{python}
+from collections import defaultdict
+
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+from sklearn.preprocessing import LabelEncoder
+
+import torch
+from torch import nn, optim
+from torch.utils.data import Dataset, DataLoader
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+```
+
+```{python}
+# Load and unzip the amazon-product-reviews.zip file
+!kaggle datasets download -d saurav9786/amazon-product-reviews
+import zipfile
+zip_file_path = "amazon-product-reviews.zip"
+
+with zipfile.ZipFile(zip_file_path, 'r') as zip_ref:
+    zip_ref.extractall("extracted_folder") 
+```
+
+```{python}
+# Load the ratings_Electronics (1).csv dataset
+df = pd.read_csv(r'C:\Users\brian\Projects\extracted_folder\ratings_Electronics (1).csv')
+```
+
+```{python}
+# Data Cleaning
+df.columns = ['user_id', 'item_id', 'rating', 'timestamp']
+df.sort_values(['user_id', 'timestamp'], ascending=[True, True]).reset_index(drop=True)
+df.head()
+```
+
+```{python}
+# Quick EDA
+plt.figure(figsize=(5,2))
+bins = np.arange(0,6,0.5)-0.25
+plt.hist(df.rating.values, bins=bins)
+plt.xticks(np.arange(0.5, 5.5, 0.5))
+plt.title('Num Ratings vs Rating')
+plt.xlabel('Rating')
+plt.ylabel('Num Ratings');
+
+plt.figure(figsize=(5,2))
+plt.hist(df.groupby(['user_id'])['user_id'].transform(len), bins = 250)
+plt.xlim(0, 50)
+plt.title('Distribution of Number of Ratings per User')
+plt.xlabel('Ratings per User')
+plt.ylabel('Count');
+```
+
+```{python}
+# Change the id of items and users so that max_id = n_users/n_items
+d = defaultdict(LabelEncoder)
+cols_cat = ['user_id', 'item_id']
+for c in cols_cat:
+    d[c].fit(df[c].unique())
+    df[c] = d[c].transform(df[c])
+
+min_num_ratings = df.groupby(['user_id'])['user_id'].transform(len).min()
+print(f'Min # of ratings per user: {min_num_ratings}')
+print(f'Min/Max rating: {df.rating.min()}/{df.rating.max()}, df.shape: {df.shape}')
+df.head()
+```
+
+```{python}
+df.head(20)
+```
+
+
+```{python}
+# Train test split, select testing set at random, with 80/20 split
+seed = 42
+np.random.seed(seed)
+df_shuffled = df.sample(frac=1, random_state=seed).reset_index(drop=True)
+
+train_fraction = 0.8
+train_size = int(len(df) * train_fraction)
+
+df_train = df_shuffled[:train_size]
+df_val = df_shuffled[train_size:]
+
+class ItemDataset(Dataset):
+    def __init__(self, df):
+        super().__init__()
+        self.df = df[['user_id', 'item_id', 'rating']]
+        self.x_user_item = list(zip(df.user_id.values, df.item_id.values))
+        self.y_rating = self.df.rating.values
+    def __len__(self):
+        return len(self.df)
+    def __getitem__(self, idx):
+        return self.x_user_item[idx], self.y_rating[idx]
+```
+
+
+```{python}
+BS = 8192
+ds_train = ItemDataset(df_train)
+ds_val = ItemDataset(df_val)
+dl_train = DataLoader(ds_train, BS, shuffle=True, num_workers=0)
+dl_val = DataLoader(ds_val, BS, shuffle=True, num_workers=0)
+
+xb, yb = next(iter(dl_train))
+print(xb)
+print(yb)
+```
+
+
+### 2. Model construction and fitting
+
+```{python}
+# Construct nodel structure with bias term
+class MF(nn.Module):
+    """ Matrix factorization model simple """
+    def __init__(self, num_users, num_items, emb_dim):
+        super().__init__()
+        self.user_emb = nn.Sequential(
+            nn.Embedding(num_embeddings=num_users, embedding_dim=emb_dim),
+            nn.BatchNorm1d(emb_dim)
+        )
+        self.item_emb = nn.Sequential(
+            nn.Embedding(num_embeddings=num_items, embedding_dim=emb_dim),
+            nn.BatchNorm1d(emb_dim)
+        )
+    def forward(self, user, item):
+        user_emb = self.user_emb(user)
+        item_emb = self.item_emb(item)
+        element_product = (user_emb*item_emb).sum(1)
+        return element_product
+```
+
+
+```{python}
+n_users = len(df.user_id.unique())
+n_items = len(df.item_id.unique())
+mdl = MF(n_users, n_items, emb_dim=32)
+mdl.to(device)
+print(mdl)
+```
+
+
+```{python}
+# Train with defined parameters
+LR = 0.002
+NUM_EPOCHS = 10
+wd = 0.01
+
+opt = optim.AdamW(mdl.parameters(), lr=LR,  weight_decay=wd)
+loss_fn = nn.MSELoss()
+epoch_train_losses, epoch_val_losses = [], []
+
+for i in range(NUM_EPOCHS):
+    train_losses, val_losses = [], []
+    mdl.train()
+    for xb,yb in dl_train:
+        xUser = xb[0].to(device, dtype=torch.long)
+        xItem = xb[1].to(device, dtype=torch.long)
+        yRatings = yb.to(device, dtype=torch.float)
+        preds = mdl(xUser, xItem)
+        mse_loss = loss_fn(preds, yRatings)
+        rmse_loss = np.sqrt(mse_loss.item())
+        train_losses.append(rmse_loss)
+        opt.zero_grad()
+        mse_loss.backward()
+        opt.step()
+    mdl.eval()
+    for xb,yb in dl_val:
+        xUser = xb[0].to(device, dtype=torch.long)
+        xItem = xb[1].to(device, dtype=torch.long)
+        yRatings = yb.to(device, dtype=torch.float)
+        preds = mdl(xUser, xItem)
+        mse_loss = loss_fn(preds, yRatings)
+        rmse_loss = np.sqrt(mse_loss.item())
+        val_losses.append(rmse_loss)
+    # Start logging
+    epoch_train_loss = np.mean(train_losses)
+    epoch_val_loss = np.mean(val_losses)
+    epoch_train_losses.append(epoch_train_loss)
+    epoch_val_losses.append(epoch_val_loss)
+    print(f'Epoch: {i}, Train Loss: {epoch_train_loss:0.1f}, Val Loss:{epoch_val_loss:0.1f}')
+```
+
+
+```{python}
+plt.figure(figsize=(5,2))
+plt.plot(epoch_train_losses, label='Train')
+plt.plot(epoch_val_losses, label='Val')
+plt.title('Loss vs Epoch')
+plt.xlabel('Epoch')
+plt.ylabel('Loss')
+plt.grid()
+plt.legend();
+```
+
+Note that the best validation loss is 1.4
+
+
+### 3. Trying out Advaces Implementations
+
+```{python}
+# Define configurations
+CFG = {
+    'sigmoid': True,
+    'bias': True,
+    'init': True,
+    'lr': 0.001,
+    'num_epochs': 10,
+}
+```
+
+#### 3.1 Introduce Bias Term
+
+
+```{python}
+# Construct model structure with bias terms and an offset term, sigmoid transform the sum of the product of user and item matrix, bias terms and pffset term
+def sigmoid_range(x, low, high):
+    """ Sigmoid function with range (low, high) """
+    return torch.sigmoid(x) * (high-low) + low
+
+class MFAdvanced(nn.Module):
+    """ Matrix factorization + user & item bias, weight init., sigmoid_range """
+    def __init__(self, num_users, num_items, emb_dim, init, bias, sigmoid):
+        super().__init__()
+        self.bias = bias
+        self.sigmoid = sigmoid
+        self.user_emb = nn.Embedding(num_users, emb_dim)
+        self.item_emb = nn.Embedding(num_items, emb_dim)
+        if bias:
+            self.user_bias = nn.Parameter(torch.zeros(num_users))
+            self.item_bias = nn.Parameter(torch.zeros(num_items))
+            self.offset = nn.Parameter(torch.zeros(1))
+        if init:
+            self.user_emb.weight.data.uniform_(0., 0.05)
+            self.item_emb.weight.data.uniform_(0., 0.05)
+    def forward(self, user, item):
+        user_emb = self.user_emb(user)
+        item_emb = self.item_emb(item)
+        element_product = (user_emb*item_emb).sum(1)
+        if self.bias:
+            user_b = self.user_bias[user]
+            item_b = self.item_bias[item]
+            element_product += user_b + item_b + self.offset
+        if self.sigmoid:
+            return sigmoid_range(element_product, 0.5, 5.5)
+        return element_product
+```
+
+```{python}
+x = torch.Tensor(np.arange(-10,10,0.01))
+y = sigmoid_range(x, 0.5, 5.5)
+plt.figure(figsize=(3,2.6))
+plt.plot(x,y)
+plt.title('Sigmoid_range')
+plt.xlabel('x')
+plt.ylabel('y')
+plt.grid();
+```
+
+#### 3.2 Round to the nearest full number instead of a double
+
+```{python}
+# Round to the nearest full number instead of a double
+def round_to_1(list_nums):
+    """ Helper func to round nums to nearest 1, eg 1.45 -> 1 """
+    return np.round(np.array(list_nums))
+
+x = np.arange(0,5.5,0.01)
+y = round_to_1(x)
+plt.figure(figsize=(5,3))
+plt.plot(x,y)
+plt.title('Convert Prediction to Integer')
+plt.xlabel('Prediction')
+plt.ylabel('Output')
+plt.grid();
+```
+
+### Define and trian the model
+
+```{python}
+# Define the model
+n_users = len(df.user_id.unique())
+n_items = len(df.user_id.unique())
+mdl = MFAdvanced(n_users, n_items, emb_dim=32,
+                 init=CFG['init'],
+                 bias=CFG['bias'],
+                 sigmoid=CFG['sigmoid'],
+)
+mdl.to(device)
+print(dict(mdl.named_parameters()).keys())
+```
+
+```{python}
+# Train with defined parameters, add regularization
+opt = optim.AdamW(mdl.parameters(), lr=CFG['lr'])
+loss_fn = nn.MSELoss()
+epoch_train_losses, epoch_val_losses = [], []
+
+for i in range(CFG['num_epochs']):
+    train_losses, val_losses = [], []
+    mdl.train()
+    for xb,yb in dl_train:
+        xUser = xb[0].to(device, dtype=torch.long)
+        xItem = xb[1].to(device, dtype=torch.long)
+        yRatings = yb.to(device, dtype=torch.float)
+        preds = mdl(xUser, xItem)
+        loss = loss_fn(preds, yRatings)
+        train_losses.append(loss.item())
+        opt.zero_grad()
+        loss.backward()
+        opt.step()
+    lpreds, lratings = [], []
+    mdl.eval()
+    for xb,yb in dl_val:
+        xUser = xb[0].to(device, dtype=torch.long)
+        xItem = xb[1].to(device, dtype=torch.long)
+        yRatings = yb.to(device, dtype=torch.float)
+        preds = mdl(xUser, xItem)
+        loss = loss_fn(preds, yRatings)
+        val_losses.append(loss.item())
+        # Start F1, precision, recall calculation
+        lpreds.extend(preds.detach().cpu().numpy().tolist())
+        lratings.extend(yRatings.detach().cpu().numpy().tolist())
+    # Start logging
+    epoch_train_loss = np.mean(train_losses)
+    epoch_val_loss = np.mean(val_losses)
+    epoch_train_losses.append(epoch_train_loss)
+    epoch_val_losses.append(epoch_val_loss)
+    # For f1, precision, recall -> round preds to 0.5 and multiply by 2.
+    # This turns fractional values to integers. Eg 1.34 -> 1.5 -> 3
+    y_true = round_to_1(lpreds)
+    y_hat = np.array(lratings)
+    s = (f'Epoch: {i}, Train Loss: {epoch_train_loss:0.1f}, Val Loss: {epoch_val_loss:0.1f}')
+    print(s)
+```
