@@ -1,6 +1,6 @@
 # vignette-Recommender-MF
 
-An overview and application of advanced recommender system algorithm, Matrix Factorization
+Vignette on overview and application of advanced recommender system algorithm, Matrix Factorization, using Amazon electronic product review data; created as a class project for PSTAT197A in Fall 2024.
 
 # Contributors
 
