@@ -25,6 +25,35 @@ Note: In our data folder we will only include 5000 rows of data for reference be
 
 
 
-# SVD
+# Baseline Model(SVD)
+
+Singular value decomposition (or SVD) is a method of matrix factorization that consists of rescaling and multiple rotations that eventually results in three components: U, a unitary matrix consisting of left singular vectors, ∑, a rectangular matrix consisting of eigenvectors on the diagonal, and V, a complex unitary matrix with right singular vectors. To implement SVD in Python we will use the functions drawn from the scikit-surprise package. We will first specify a reader() object which will help to parse our input data.
+
+```{python}
+from surprise import SVD, Dataset, Reader, accuracy
+from surprise.model_selection import train_test_split
+reader = Reader(rating_scale=(1, 5))
+data = Dataset.load_from_df(data[['user_id', 'item_id', 'rating']], reader
+```
+
+We then create our training and testing sets in addition to initializing our svd model. 
+
+```{python}
+trainset, testset = train_test_split(data, test_size=0.2)
+svd = SVD()
+```
+
+Next, we compute predictions and analyze the model’s accuracy using RMSE and MAE as our evaluation metrics. 
+
+```{python}
+predictions = svd.test(testset)
+rmse = accuracy.rmse(predictions)
+mae = accuracy.mae(predictions)
+```
+
+RMSE: 1.2943
+MAE: 1.0190
+
+Thus we see that our baseline model, SVD, didn't perform horribly in terms of RMSE and MAE. 
 
 # Deep Learning
