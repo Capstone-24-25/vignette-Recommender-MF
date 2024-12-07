@@ -124,14 +124,8 @@ class MF(nn.Module):
     """ Matrix factorization model simple """
     def __init__(self, num_users, num_items, emb_dim):
         super().__init__()
-        self.user_emb = nn.Sequential(
-            nn.Embedding(num_embeddings=num_users, embedding_dim=emb_dim),
-            nn.BatchNorm1d(emb_dim)
-        )
-        self.item_emb = nn.Sequential(
-            nn.Embedding(num_embeddings=num_items, embedding_dim=emb_dim),
-            nn.BatchNorm1d(emb_dim)
-        )
+        self.user_emb = nn.Embedding(num_embeddings=num_users, embedding_dim=emb_dim)
+        self.item_emb = nn.Embedding(num_embeddings=num_items, embedding_dim=emb_dim)
     def forward(self, user, item):
         user_emb = self.user_emb(user)
         item_emb = self.item_emb(item)
@@ -213,7 +207,7 @@ CFG = {
     'sigmoid': True,
     'bias': True,
     'init': True,
-    'lr': 0.001,
+    'lr': 0.0005,
     'num_epochs': 10,
 }
 ```
@@ -314,7 +308,8 @@ for i in range(CFG['num_epochs']):
         yRatings = yb.to(device, dtype=torch.float)
         preds = mdl(xUser, xItem)
         loss = loss_fn(preds, yRatings)
-        train_losses.append(loss.item())
+        rmse_loss = np.sqrt(loss.item())
+        train_losses.append(rmse_loss)
         opt.zero_grad()
         loss.backward()
         opt.step()
@@ -326,7 +321,8 @@ for i in range(CFG['num_epochs']):
         yRatings = yb.to(device, dtype=torch.float)
         preds = mdl(xUser, xItem)
         loss = loss_fn(preds, yRatings)
-        val_losses.append(loss.item())
+        rmse_loss = np.sqrt(loss.item())
+        val_losses.append(rmse_loss)
         # Start F1, precision, recall calculation
         lpreds.extend(preds.detach().cpu().numpy().tolist())
         lratings.extend(yRatings.detach().cpu().numpy().tolist())
