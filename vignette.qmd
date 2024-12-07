@@ -15,11 +15,11 @@ The dataset is part of the Amazon Reviews Data repository, which was curated by 
 
 Note: In our data folder we will only include 5000 rows of data for reference because the entire data is too large to be uploaded on github. 
 
-## Attribute information: \
--   userId : Every user identified with a unique id (First Column)\
--   productId : Every product identified with a unique id (Second Column)\
--   Rating : Rating of the corresponding product by the corresponding user (Third Column)\
--   timestamp : Time of the rating (Fourth Column)\
+### Attribute information: \
+-   `userId` : Every user identified with a unique id (First Column)\
+-   `productId` : Every product identified with a unique id (Second Column)\
+-   `Rating` : Rating of the corresponding product by the corresponding user (Third Column)\
+-   `timestamp` : Time of the rating (Fourth Column)\
 
 # Matrix Factorization
 
