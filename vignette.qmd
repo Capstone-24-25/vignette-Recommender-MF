@@ -1,5 +1,7 @@
 ---
-title: "Untitled"
+title: "Recommendor Systems with Deep Learning - Matrix Factorization"
+author: "Kuan-I Lu, Colin Nguyen, Candis Wu, Caitlyn Vasquez, Carter Kulm"
+date: "`r Sys.Date()`"
 format: html
 ---
 
@@ -8,6 +10,8 @@ format: html
 # Data Description
 
 # Matrix Factorization
+
+
 
 # SVD
 
