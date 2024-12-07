@@ -9,6 +9,18 @@ format: html
 
 # Data Description
 
+This dataset is sourced from Kaggle after searching for data that matched the structure of examples referenced in the Dive Into Deep Learning textbook. The dataset contains user ratings for products, making it a strong candidate for testing recommendation systems, particularly collaborative filtering models.
+
+The dataset is part of the Amazon Reviews Data repository, which was curated by Julian McAuley. It contains product reviews and ratings across multiple categories. For our project, we specifically utilized the Electronics dataset. The original data source can be found [here](https://www.kaggle.com/datasets/saurav9786/amazon-product-reviews).
+
+Note: In our data folder we will only include 5000 rows of data for reference because the entire data is too large to be uploaded on github. 
+
+## Attribute information: \
+-   userId : Every user identified with a unique id (First Column)\
+-   productId : Every product identified with a unique id (Second Column)\
+-   Rating : Rating of the corresponding product by the corresponding user (Third Column)\
+-   timestamp : Time of the rating (Fourth Column)\
+
 # Matrix Factorization
 
 
