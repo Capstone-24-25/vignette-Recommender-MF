@@ -13,7 +13,7 @@ This dataset is sourced from Kaggle after searching for data that matched the st
 
 The dataset is part of the Amazon Reviews Data repository, which was curated by Julian McAuley. It contains product reviews and ratings across multiple categories. For our project, we specifically utilized the Electronics dataset. The original data source can be found [here](https://www.kaggle.com/datasets/saurav9786/amazon-product-reviews).
 
-Note: In our data folder we will only include 5000 rows of data for reference because the entire data is too large to be uploaded on github. 
+Note: In our data folder we will only include 5000 rows of data for reference because the entire data file is too large to be uploaded on github. 
 
 ### Attribute information: \
 -   `userId` : Every user identified with a unique id (First Column)\
