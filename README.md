@@ -1,6 +1,6 @@
 # vignette-Recommender-MF
 
-Vignette on application of advanced recommender system algorithm, Matrix Factorization, using Amazon electronic product review data; created as a class project for PSTAT197A in Fall 2024.
+Vignette on application of advanced recommender system with Deep Learning Methods, Matrix Factorization, using Amazon electronic product review data; created as a class project for PSTAT197A in Fall 2024.
 
 # Contributors
 
@@ -18,6 +18,8 @@ The data we will be working with is a set of Amazon electronic product reviews t
 The `vignette.qmd` file will serve as our group's primary vignette document and will include specific code chunks and their explanations that teach the reader about the matrix factorization method being shown. Selected results will be shown at the end of the document that illustrate the predictions given by the model. 
 
 The script included in our repository will contain all code used to build the model along with line-by-line annotations that make it easier to understand or replicate the methods put to use. The chunks included in the primary vignette document will be drawn from this script.
+
+add img and data description.
 
 
 # Reference List
