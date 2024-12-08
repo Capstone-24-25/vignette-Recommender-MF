@@ -40,7 +40,7 @@ This histogram represents how frequently users provide a specific number of rati
 
 There are several methods to approach this, one being simply applying Singular Value Decomposition (SVD) and obtaining the user and item matrix directly. This is going to be our benchmark. A more advanced approach is to implement deep learning algorithms to train for the weights (parameters) in the user and item matrix, respectively. To make the product of these two matrices ($user matrix \times item matrix$) having values close to the observed matrix.
 
-# Baseline Model (SVD)
+## Baseline Model (SVD)
 
 ![Figure 4. Illustration of SVD](img/svd.png){fig-align="center" width="492"}
 
@@ -72,11 +72,15 @@ RMSE: 1.2943 MAE: 1.0190
 
 Thus we see that our baseline model, SVD, didn't perform horribly in terms of RMSE and MAE. Thus we see that our baseline model, SVD, performed pretty well in terms of RMSE and MAE.
 
-# Deep Learning
+## Deep Learning
+
+### Algorithm Framework
 
 Our recommender system extends traditional matrix factorization by incorporating deep learning techniques. In this model, we utilize embedding layers to learn latent representations of users and items, which are equivalent to the factors derived from Singular Value Decomposition in matrix factorization. However, utilizing deep learning allows for a more dynamic optimization where the embeddings are refined through a stochastic gradient descent. This allows the model to adapt to new data, continuously improving predictions. The embeddings are also used in a way that allows the model to generalize the non-linear relationships in user-item interactions that a traditional SVD cannot account for. This is done by putting each item into an embedding layer, which creates a vector representation. The user and item embedded layers are then multiplied together and summed. The Illustration of the algorithm is shown below:
 
 ![Fig 5. Basic Deep Learning Algorithm](img/Screenshot%202024-12-07%20171948.png){fig-align="center" width="535"}
+
+### Implementation
 
 Here we are defining a simple matrix factorization model for a reccomendation system. Within the MF class we are creating embedding layers for user items, which are the learned latent represntations that capture user preferences and item characteristics. The forward method computes the dot product of the user and item embeddings to predict the interaction score (rating).
 
@@ -156,9 +160,11 @@ After training the model, the training loss and validation per epoch is shown be
 
 From the results, we can see that the validation RMSE of the best performing model is around 5.5.
 
-# Advanced Deep Learning Method
+## Advanced Deep Learning Method
 
-We can see that the basic deep learning framework did explain the user and item pattern pretty well, but the validation loss (RMSE) stopped dropping at 5.5, which is significantly higher than the baseline model. To improve from this model, we explored an advanced version based on the current version, with the following  addition:
+### Algorithm Framework
+
+We can see that the basic deep learning framework did explain the user and item pattern pretty well, but the validation loss (RMSE) stopped dropping at 5.5, which is significantly higher than the baseline model. To improve from this model, we explored an advanced version based on the current version, with the following addition:
 
 -   User and Item Bias: This is to accommodate situations of “biased graders”, we have a bias matrix for users and another one for items.
 
@@ -170,7 +176,7 @@ With the addition of these elements, the illustration of the model is as follows
 
 ![Fig 8. Advanced Deep Learning Algorithm for Matrix Factorization](img/Screenshot%202024-12-07%20165109.png){fig-align="center" width="523"}
 
-# Implementation
+### Implementation
 
 We first must define the configurations of the new model. We specify that we would like to use a sigmoid function, introduce user and item bias, and set the learning rate and number of epochs as well.
 
@@ -236,3 +242,5 @@ From the results, we can see that the validation RMSE of the best performing mod
 # Conclusion
 
 This project demonstrated the power and flexibility of recommender systems, with a focus on collaborative filtering methods enhanced by deep learning techniques. Starting with a baseline model using Singular Value Decomposition (SVD), we achieved desirable accuracy metrics already, showcasing the effectiveness of traditional matrix factorization. We then extended this approach by implementing a deep learning framework that utilized embedding layers to capture complex user-item interactions. This advanced model allowed for dynamic optimization and better generalization of non-linear relationships. However, the performance compared to the baseline model is very similar, which suggests that a combination of deep learning methods and other methods should be implemented to reach a better performance. Through this exploration, we highlighted the benefits of integrating deep learning into recommendation systems, paving the way for more robust and adaptive solutions in real-world applications.
+
+

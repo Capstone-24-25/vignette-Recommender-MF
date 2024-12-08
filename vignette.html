@@ -188,9 +188,8 @@ window.Quarto = {
 </figure>
 </div>
 <p>There are several methods to approach this, one being simply applying Singular Value Decomposition (SVD) and obtaining the user and item matrix directly. This is going to be our benchmark. A more advanced approach is to implement deep learning algorithms to train for the weights (parameters) in the user and item matrix, respectively. To make the product of these two matrices (<span class="math inline">\(user matrix \times item matrix\)</span>) having values close to the observed matrix.</p>
-</section>
-<section id="baseline-model-svd" class="level1">
-<h1>Baseline Model (SVD)</h1>
+<section id="baseline-model-svd" class="level2">
+<h2 class="anchored" data-anchor-id="baseline-model-svd">Baseline Model (SVD)</h2>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="img/svd.png" class="img-fluid figure-img" width="492"></p>
@@ -212,8 +211,10 @@ window.Quarto = {
 <p>RMSE: 1.2943 MAE: 1.0190</p>
 <p>Thus we see that our baseline model, SVD, didn’t perform horribly in terms of RMSE and MAE. Thus we see that our baseline model, SVD, performed pretty well in terms of RMSE and MAE.</p>
 </section>
-<section id="deep-learning" class="level1">
-<h1>Deep Learning</h1>
+<section id="deep-learning" class="level2">
+<h2 class="anchored" data-anchor-id="deep-learning">Deep Learning</h2>
+<section id="algorithm-framework" class="level3">
+<h3 class="anchored" data-anchor-id="algorithm-framework">Algorithm Framework</h3>
 <p>Our recommender system extends traditional matrix factorization by incorporating deep learning techniques. In this model, we utilize embedding layers to learn latent representations of users and items, which are equivalent to the factors derived from Singular Value Decomposition in matrix factorization. However, utilizing deep learning allows for a more dynamic optimization where the embeddings are refined through a stochastic gradient descent. This allows the model to adapt to new data, continuously improving predictions. The embeddings are also used in a way that allows the model to generalize the non-linear relationships in user-item interactions that a traditional SVD cannot account for. This is done by putting each item into an embedding layer, which creates a vector representation. The user and item embedded layers are then multiplied together and summed. The Illustration of the algorithm is shown below:</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -221,6 +222,9 @@ window.Quarto = {
 <figcaption>Fig 5. Basic Deep Learning Algorithm</figcaption>
 </figure>
 </div>
+</section>
+<section id="implementation" class="level3">
+<h3 class="anchored" data-anchor-id="implementation">Implementation</h3>
 <p>Here we are defining a simple matrix factorization model for a reccomendation system. Within the MF class we are creating embedding layers for user items, which are the learned latent represntations that capture user preferences and item characteristics. The forward method computes the dot product of the user and item embeddings to predict the interaction score (rating).</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Construct nodel structure with bias term</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> MF(nn.Module):</span>
@@ -294,9 +298,12 @@ window.Quarto = {
 </div>
 <p>From the results, we can see that the validation RMSE of the best performing model is around 5.5.</p>
 </section>
-<section id="advanced-deep-learning-method" class="level1">
-<h1>Advanced Deep Learning Method</h1>
-<p>We can see that the basic deep learning framework did explain the user and item pattern pretty well, but the validation loss (RMSE) stopped dropping at 5.5, which is significantly higher than the baseline model. To improve from this model, we explored an advanced version based on the current version, with the following&nbsp; addition:</p>
+</section>
+<section id="advanced-deep-learning-method" class="level2">
+<h2 class="anchored" data-anchor-id="advanced-deep-learning-method">Advanced Deep Learning Method</h2>
+<section id="algorithm-framework-1" class="level3">
+<h3 class="anchored" data-anchor-id="algorithm-framework-1">Algorithm Framework</h3>
+<p>We can see that the basic deep learning framework did explain the user and item pattern pretty well, but the validation loss (RMSE) stopped dropping at 5.5, which is significantly higher than the baseline model. To improve from this model, we explored an advanced version based on the current version, with the following addition:</p>
 <ul>
 <li><p>User and Item Bias: This is to accommodate situations of “biased graders”, we have a bias matrix for users and another one for items.</p></li>
 <li><p>Offset: Capturing global effects.</p></li>
@@ -310,8 +317,8 @@ window.Quarto = {
 </figure>
 </div>
 </section>
-<section id="implementation" class="level1">
-<h1>Implementation</h1>
+<section id="implementation-1" class="level3">
+<h3 class="anchored" data-anchor-id="implementation-1">Implementation</h3>
 <p>We first must define the configurations of the new model. We specify that we would like to use a sigmoid function, introduce user and item bias, and set the learning rate and number of epochs as well.</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>CFG <span class="op">=</span> {</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'sigmoid'</span>: <span class="va">True</span>,</span>
@@ -366,6 +373,8 @@ window.Quarto = {
 </figure>
 </div>
 <p>From the results, we can see that the validation RMSE of the best performing model is around 1.3. Which is about the same level as our baseline model.</p>
+</section>
+</section>
 </section>
 <section id="conclusion" class="level1">
 <h1>Conclusion</h1>
