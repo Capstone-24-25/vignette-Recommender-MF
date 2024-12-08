@@ -63,3 +63,13 @@ RMSE: 1.2943 MAE: 1.0190
 Thus we see that our baseline model, SVD, performed pretty well in terms of RMSE and MAE.
 
 # Deep Learning
+
+
+
+# Advanced Deep Learning Method
+
+  We can see that the
+
+
+
+
