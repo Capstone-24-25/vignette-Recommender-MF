@@ -1,7 +1,7 @@
 ---
 title: "Recommendor Systems with Deep Learning - Matrix Factorization"
 author: "Kuan-I Lu, Colin Nguyen, Candis Wu, Caitlyn Vasquez, Carter Kulm"
-date: "`r Sys.Date()`"
+date: "12-7-2024"
 format: html
 ---
 
@@ -26,23 +26,23 @@ Note: In our data folder we will only include 5000 rows of data for reference be
 
 ### Exploratory Data Analysis
 
-![Figure 1. Bar Graph of Numbers of Ratings vs Ratings](img/EDA%20Rating%20distribution.png){fig-align="center" width="404"}
+![Figure 1. Bar Graph of Numbers of Ratings vs Ratings](img/EDA-Rating-distribution.png){fig-align="center" width="414"}
 
 This bar chart illustrates the distribution of numerical ratings across various rating scores. The x-axis represents the ratings, ranging from 0.5 to 5.0 in 0.5 increments, while the y-axis shows the number of ratings, scaled in millions. The highest count of ratings is associated with a rating of 5.0, exceeding 4 million ratings. Other ratings, such as 1.0, 3.0, and 4.0, have significantly fewer ratings in comparison.
 
-![Figure 2. Distribution of Number of Ratings per User](img/EDA%20Rating%20per%20user%20distribution.png){fig-align="center" width="403"}
+![Figure 2. Distribution of Number of Ratings per User](img/EDA-Rating-per-user-distribution.png){fig-align="center" width="421"}
 
 This histogram represents how frequently users provide a specific number of ratings. The x-axis denotes the number of ratings given by users, ranging from 0 to 50, and the y-axis shows the count of users, scaled in millions. A vast majority of users provide very few ratings, with the highest concentration around 1 to 2 ratings per user. The frequency of users rapidly decreases as the number of ratings per user increases.
 
 # Matrix Factorization
 
-![Figure 3. Illustration of matrix factorization model](img/MF-illustration.png){fig-align="center"}
+![Figure 3. Illustration of matrix factorization model](img/MF-illustration.png){fig-align="center" width="505"}
 
-There are several methods to approach this, one being simply applying Singular Value Decomposition (SVD) and obtaining the user and item matrix directly. This is going to be our benchmark. A more advanced approach is to implement deep learning algorithms to train for the weights (parameters) in the user and item matrix, respectively. To make the product of these two matrices having values close to the observed matrix.
+There are several methods to approach this, one being simply applying Singular Value Decomposition (SVD) and obtaining the user and item matrix directly. This is going to be our benchmark. A more advanced approach is to implement deep learning algorithms to train for the weights (parameters) in the user and item matrix, respectively. To make the product of these two matrices ($user matrix \times item matrix$) having values close to the observed matrix.
 
 # Baseline Model (SVD)
 
-![Figure 4. Illustration of SVD](img/svd.png){fig-align="center"}
+![Figure 4. Illustration of SVD](img/svd.png){fig-align="center" width="492"}
 
 Singular value decomposition (or SVD) is a method of matrix factorization that consists of rescaling and multiple rotations that eventually results in three components: U, a unitary matrix consisting of left singular vectors, ∑, a rectangular matrix consisting of eigenvectors on the diagonal, and V, a complex unitary matrix with right singular vectors. To implement SVD in Python we will use the functions drawn from the scikit-surprise package. We will first specify a reader() object which will help to parse our input data.
 
@@ -74,9 +74,9 @@ Thus we see that our baseline model, SVD, didn't perform horribly in terms of RM
 
 # Deep Learning
 
-Our recomender system extends traditional matrix factorization by incorperating deep learning techniques. In this model, we utilize embedding layers to learn latent representations of users and items, which are equivalent to the factors derived from Singular Value Decomposition in matrix factorization. However, utilizing deep learning allows for a more dynamic optimization where the embeddings are refined through a stochastic gradient descent. This allows the model to adapt to new data, continuously improving predictions. The embeddings are also used in a way that allows the model to generalize the non-linear relationships in user-item interactions that a traditional SVD cannot account for. This is done by putting each item into an embedding layer, which creates a vector representation. The user and item embedded layers are then multiplied together and summed. The Illustration of the algorithm is shown below:
+Our recommender system extends traditional matrix factorization by incorporating deep learning techniques. In this model, we utilize embedding layers to learn latent representations of users and items, which are equivalent to the factors derived from Singular Value Decomposition in matrix factorization. However, utilizing deep learning allows for a more dynamic optimization where the embeddings are refined through a stochastic gradient descent. This allows the model to adapt to new data, continuously improving predictions. The embeddings are also used in a way that allows the model to generalize the non-linear relationships in user-item interactions that a traditional SVD cannot account for. This is done by putting each item into an embedding layer, which creates a vector representation. The user and item embedded layers are then multiplied together and summed. The Illustration of the algorithm is shown below:
 
-![Fig 5. Basic Deep Learning Algorithm](img/Screenshot 2024-12-07 171948.png){fig-align="center" width="535"}
+![Fig 5. Basic Deep Learning Algorithm](img/Screenshot%202024-12-07%20171948.png){fig-align="center" width="535"}
 
 Here we are defining a simple matrix factorization model for a reccomendation system. Within the MF class we are creating embedding layers for user items, which are the learned latent represntations that capture user preferences and item characteristics. The forward method computes the dot product of the user and item embeddings to predict the interaction score (rating).
 
@@ -150,9 +150,11 @@ for i in range(NUM_EPOCHS):
 
 After training the model, the training loss and validation per epoch is shown below:
 
-![Fig 6. Basic Deep Learning Training Epochs](img/vanilla deep epoch.png){fig-align="center" width="329"}
+![Fig 6. Basic Deep Learning Training Epochs](img/vanilla%20deep%20epoch.png){fig-align="center" width="329"}
 
-![Fig 7. Basic Deep Learning Train and Validation Loss](img/vanilla deep graph.png){fig-align="center" width="321"}
+![Fig 7. Basic Deep Learning Train and Validation Loss](img/vanilla%20deep%20graph.png){fig-align="center" width="321"}
+
+From the results, we can see that the validation RMSE of the best performing model is around 5.5.
 
 # Advanced Deep Learning Method
 
@@ -166,13 +168,13 @@ We can see that the basic deep learning framework did explain the user and item 
 
 With the addition of these elements, the illustration of the model is as follows, shown in Fig 8.
 
-![Fig 8. Advanced Deep Learning Algorithm for Matrix Factorization](img/Screenshot 2024-12-07 165109.png){fig-align="center"}
+![Fig 8. Advanced Deep Learning Algorithm for Matrix Factorization](img/Screenshot%202024-12-07%20165109.png){fig-align="center"}
 
 # Implementation
 
-We first must define the configurations of the new model. We specify that we would like to use a sigmoid function, introduce user and item bias, and set the learning rate and number of epochs as well. 
+We first must define the configurations of the new model. We specify that we would like to use a sigmoid function, introduce user and item bias, and set the learning rate and number of epochs as well.
 
-```python
+``` python
 CFG = {
     'sigmoid': True,
     'bias': True,
@@ -182,17 +184,17 @@ CFG = {
 }
 ```
 
-Next, we must begin the process of building the model structure. First, the specific sigmoid function we wish to use is defined. 
+Next, we must begin the process of building the model structure. First, the specific sigmoid function we wish to use is defined.
 
-```python
+``` python
 def sigmoid_range(x, low, high):
     """ Sigmoid function with range (low, high) """
     return torch.sigmoid(x) * (high-low) + low
 ```
 
-Next, we incorporate the new additions of the model into its structure. The code to do so is shown below. 
+Next, we incorporate the new additions of the model into its structure. The code to do so is shown below.
 
-```python
+``` python
 class MFAdvanced(nn.Module):
     """ Matrix factorization + user & item bias, weight init., sigmoid_range """
     def __init__(self, num_users, num_items, emb_dim, init, bias, sigmoid):
@@ -221,6 +223,16 @@ class MFAdvanced(nn.Module):
         return element_product
 ```
 
-As we can see, if bias is specified as true, then the user and item bias will be incorporated into its structure. The offset term of the model is also described. Lastly, if sigmoid is set to true by the user, we implement the sigmoid function that was defined earlier. 
+As we can see, if bias is specified as true, then the user and item bias will be incorporated into its structure. The offset term of the model is also described. Lastly, if sigmoid is set to true by the user, we implement the sigmoid function that was defined earlier.
 
-After training our new model, the resulting loss and rmse are improved from the more basic model and shown here:
+After training our new model, the resulting loss and RMSE are improved from the more basic model and shown here:
+
+![Fig 9. Advanced Deep Learning Training Epochs](img/advanced%20deep%20epoch.png){fig-align="center" width="344"}
+
+![Fig 10. Advanced Deep Learning Train and Validation Loss](img/advanced%20deep%20graph.png){fig-align="center" width="345"}
+
+From the results, we can see that the validation RMSE of the best performing model is around 1.3. Which is about the same level as our baseline model.
+
+# Conclusion
+
+This project demonstrated the power and flexibility of recommender systems, with a focus on collaborative filtering methods enhanced by deep learning techniques. Starting with a baseline model using Singular Value Decomposition (SVD), we achieved desirable accuracy metrics already, showcasing the effectiveness of traditional matrix factorization. We then extended this approach by implementing a deep learning framework that utilized embedding layers to capture complex user-item interactions. This advanced model allowed for dynamic optimization and better generalization of non-linear relationships. However, the performance compared to the baseline model is very similar, which suggests that a combination of deep learning methods and other methods should be implemented to reach a better performance. Through this exploration, we highlighted the benefits of integrating deep learning into recommendation systems, paving the way for more robust and adaptive solutions in real-world applications.
