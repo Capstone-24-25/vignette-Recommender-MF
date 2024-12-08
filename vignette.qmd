@@ -167,3 +167,60 @@ We can see that the basic deep learning framework did explain the user and item 
 With the addition of these elements, the illustration of the model is as follows, shown in Fig 8.
 
 ![Fig 8. Advanced Deep Learning Algorithm for Matrix Factorization](img/Screenshot 2024-12-07 165109.png){fig-align="center"}
+
+# Implementation
+
+We first must define the configurations of the new model. We specify that we would like to use a sigmoid function, introduce user and item bias, and set the learning rate and number of epochs as well. 
+
+```python
+CFG = {
+    'sigmoid': True,
+    'bias': True,
+    'init': True,
+    'lr': 0.0005,
+    'num_epochs': 10,
+}
+```
+
+Next, we must begin the process of building the model structure. First, the specific sigmoid function we wish to use is defined. 
+
+```python
+def sigmoid_range(x, low, high):
+    """ Sigmoid function with range (low, high) """
+    return torch.sigmoid(x) * (high-low) + low
+```
+
+Next, we incorporate the new additions of the model into its structure. The code to do so is shown below. 
+
+```python
+class MFAdvanced(nn.Module):
+    """ Matrix factorization + user & item bias, weight init., sigmoid_range """
+    def __init__(self, num_users, num_items, emb_dim, init, bias, sigmoid):
+        super().__init__()
+        self.bias = bias
+        self.sigmoid = sigmoid
+        self.user_emb = nn.Embedding(num_users, emb_dim)
+        self.item_emb = nn.Embedding(num_items, emb_dim)
+        if bias:
+            self.user_bias = nn.Parameter(torch.zeros(num_users))
+            self.item_bias = nn.Parameter(torch.zeros(num_items))
+            self.offset = nn.Parameter(torch.zeros(1))
+        if init:
+            self.user_emb.weight.data.uniform_(0., 0.05)
+            self.item_emb.weight.data.uniform_(0., 0.05)
+    def forward(self, user, item):
+        user_emb = self.user_emb(user)
+        item_emb = self.item_emb(item)
+        element_product = (user_emb*item_emb).sum(1)
+        if self.bias:
+            user_b = self.user_bias[user]
+            item_b = self.item_bias[item]
+            element_product += user_b + item_b + self.offset
+        if self.sigmoid:
+            return sigmoid_range(element_product, 0.5, 5.5)
+        return element_product
+```
+
+As we can see, if bias is specified as true, then the user and item bias will be incorporated into its structure. The offset term of the model is also described. Lastly, if sigmoid is set to true by the user, we implement the sigmoid function that was defined earlier. 
+
+After training our new model, the resulting loss and rmse are improved from the more basic model and shown here:
