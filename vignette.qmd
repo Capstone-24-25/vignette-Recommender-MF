@@ -74,6 +74,77 @@ Thus we see that our baseline model, SVD, didn't perform horribly in terms of RM
 
 # Deep Learning
 
+Our recomender system extends traditional matrix factorization by incorperating deep learning techniques.  In this model, we utilize embedding layers to learn latent representations of users and items, which are equivalent to the factors derived from Singular Value Decomposition in matrix factorization.  However, utilizing deep learning allows for a more dynamic optimization where the embeddings are refined through a stochastic gradient descent.  This allows the model to adapt to new data, continuously improving predictions.  The embeddings are also used in a way that allows the model to generalize the non-linear relationships in user-item interactions that a traditional SVD cannot account for.  This is done by putting each item into an embedding layer, which creates a vector representation.  The user and item embedded layers are then multiplied together and summed.
+
+Here we are defining a simple matrix factorization model for a reccomendation system.  Within the MF class we are creating embedding layers for user items, which are the learned latent represntations that capture user preferences and item characteristics.  The forward method computes the dot product of the user and item embeddings to predict the interaction score (rating).
+```python
+# Construct nodel structure with bias term
+class MF(nn.Module):
+    """ Matrix factorization model simple """
+    def __init__(self, num_users, num_items, emb_dim):
+        super().__init__()
+        self.user_emb = nn.Embedding(num_embeddings=num_users, embedding_dim=emb_dim)
+        self.item_emb = nn.Embedding(num_embeddings=num_items, embedding_dim=emb_dim)
+    def forward(self, user, item):
+        user_emb = self.user_emb(user)
+        item_emb = self.item_emb(item)
+        element_product = (user_emb*item_emb).sum(1)
+        return element_product
+```
+
+We are retrieving the number of unique users and items from the dataset.  We then instantiate the MF model with an embedding dimension of 32, and moving the model to the GPU.
+```python
+n_users = len(df.user_id.unique())
+n_items = len(df.item_id.unique())
+mdl = MF(n_users, n_items, emb_dim=32)
+mdl.to(device)
+print(mdl)
+```
+
+First we set the learning rate, number of epochs, weight, and an AdamW optimizer for efficient gradient updates.  During the training phase, we set the training mode and batches of user-interactions for each epoch.  The indices of the user and item are then passed to the model, which in turn predicts the ratings.  The MSE loss is caclulated between predictions and actual ratings, then converted to RMSE.  Back propagation is then used to compute gradients with loss.backward(), and the model parameters are updated with opt.step().  The model is then evaluated on the validation dataset, calculating the RMSE.
+```python
+# Train with defined parameters
+LR = 0.002
+NUM_EPOCHS = 10
+wd = 0.01
+
+opt = optim.AdamW(mdl.parameters(), lr=LR,  weight_decay=wd)
+loss_fn = nn.MSELoss()
+epoch_train_losses, epoch_val_losses = [], []
+
+for i in range(NUM_EPOCHS):
+    train_losses, val_losses = [], []
+    mdl.train()
+    for xb,yb in dl_train:
+        xUser = xb[0].to(device, dtype=torch.long)
+        xItem = xb[1].to(device, dtype=torch.long)
+        yRatings = yb.to(device, dtype=torch.float)
+        preds = mdl(xUser, xItem)
+        mse_loss = loss_fn(preds, yRatings)
+        rmse_loss = np.sqrt(mse_loss.item())
+        train_losses.append(rmse_loss)
+        opt.zero_grad()
+        mse_loss.backward()
+        opt.step()
+    mdl.eval()
+    for xb,yb in dl_val:
+        xUser = xb[0].to(device, dtype=torch.long)
+        xItem = xb[1].to(device, dtype=torch.long)
+        yRatings = yb.to(device, dtype=torch.float)
+        preds = mdl(xUser, xItem)
+        mse_loss = loss_fn(preds, yRatings)
+        rmse_loss = np.sqrt(mse_loss.item())
+        val_losses.append(rmse_loss)
+    # Start logging
+    epoch_train_loss = np.mean(train_losses)
+    epoch_val_loss = np.mean(val_losses)
+    epoch_train_losses.append(epoch_train_loss)
+    epoch_val_losses.append(epoch_val_loss)
+    print(f'Epoch: {i}, Train Loss: {epoch_train_loss:0.1f}, Val Loss:{epoch_val_loss:0.1f}')
+```
+
+
+
 # Advanced Deep Learning Method
 
 We can see that the We can see that the simple deep learning framework
