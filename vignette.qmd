@@ -17,7 +17,7 @@ The dataset is part of the Amazon Reviews Data repository, which was curated by 
 
 Note: In our data folder we will only include 5000 rows of data for reference because the entire data file is too large to be uploaded on github. Note: In our data folder we will only include 5000 rows of data for reference because the entire data file is too large to be uploaded on github.
 
-### Attribute information: 
+### Attribute information:
 
 -   `userId` : Every user identified with a unique id (First Column)\
 -   `productId` : Every product identified with a unique id (Second Column)\
@@ -25,13 +25,14 @@ Note: In our data folder we will only include 5000 rows of data for reference be
 -   `timestamp` : Time of the rating (Fourth Column)\
 
 ### Exploratory Data Analysis
-![Figure 1. Bar Graph of Numbers of Ratings vs Ratings](img/EDA Rating distribution.png)
+
+![Figure 1. Bar Graph of Numbers of Ratings vs Ratings](img/EDA%20Rating%20distribution.png){width="404"}
+
 This bar chart illustrates the distribution of numerical ratings across various rating scores. The x-axis represents the ratings, ranging from 0.5 to 5.0 in 0.5 increments, while the y-axis shows the number of ratings, scaled in millions. The highest count of ratings is associated with a rating of 5.0, exceeding 4 million ratings. Other ratings, such as 1.0, 3.0, and 4.0, have significantly fewer ratings in comparison.
 
-![Figure 2. Distribution of Number of Ratings per User](img/EDA Rating per user distribution.png)
+![Figure 2. Distribution of Number of Ratings per User](img/EDA%20Rating%20per%20user%20distribution.png){width="403"}
 
-This bar chart represents how frequently users provide a specific number of ratings. The x-axis denotes the number of ratings given by users, ranging from 0 to 50, and the y-axis shows the count of users, scaled in millions. A vast majority of users provide very few ratings, with the highest concentration around 1 to 2 ratings per user. The frequency of users rapidly decreases as the number of ratings per user increases.
-
+This histogram represents how frequently users provide a specific number of ratings. The x-axis denotes the number of ratings given by users, ranging from 0 to 50, and the y-axis shows the count of users, scaled in millions. A vast majority of users provide very few ratings, with the highest concentration around 1 to 2 ratings per user. The frequency of users rapidly decreases as the number of ratings per user increases.
 
 # Matrix Factorization
 
