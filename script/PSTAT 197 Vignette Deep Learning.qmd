@@ -118,6 +118,7 @@ print(yb)
 
 ### 2. Model construction and fitting
 
+Here we are defining a simple matrix factorization model for a reccomendation system.  Within the MF class we are creating embedding layers for user items, which are the learned latent represntations that capture user preferences and item characteristics.  The forward method computes the dot product of the user and item embeddings to predict the interaction score (rating).
 ```{python}
 # Construct nodel structure with bias term
 class MF(nn.Module):
@@ -133,7 +134,7 @@ class MF(nn.Module):
         return element_product
 ```
 
-
+We are retrieving the number of unique users and items from the dataset.  We then instantiate the MF model with an embedding dimension of 32, and moving the model to the GPU.
 ```{python}
 n_users = len(df.user_id.unique())
 n_items = len(df.item_id.unique())
@@ -142,7 +143,7 @@ mdl.to(device)
 print(mdl)
 ```
 
-
+First we set the learning rate, number of epochs, weight, and an AdamW optimizer for efficient gradient updates.  During the training phase, we set the training mode and batches of user-interactions for each epoch.  The indices of the user and item are then passed to the model, which in turn predicts the ratings.  The MSE loss is caclulated between predictions and actual ratings, then converted to RMSE.  Back propagation is then used to compute gradients with loss.backward(), and the model parameters are updated with opt.step().  The model is then evaluated on the validation dataset, calculating the RMSE.
 ```{python}
 # Train with defined parameters
 LR = 0.002
