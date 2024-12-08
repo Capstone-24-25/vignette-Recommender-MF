@@ -6,6 +6,7 @@ format: html
 ---
 
 # Overview
+Our vignette is on reccomender systems that utilize deep learning techniques.  Reccomendation systems are a tool that allow us to analyze interactions between users and items, leveraging historical data to predict future interactions.  There are two types of reccomendations systems, content-based and colloboaring filtering, which is what are using.  In collaborative filtering, the system predicts user preferences based off the behavior of oother users, assuming that users with similar past preferences will have similar future preferences.  Furthermore, advanced reccomendation systems can incorperate machine learning and deep learning techniques to improve accuracy, allowing the system to capture complex on linear relationships in the data.
 
 # Data Description
 
@@ -14,6 +15,7 @@ This dataset is sourced from Kaggle after searching for data that matched the st
 The dataset is part of the Amazon Reviews Data repository, which was curated by Julian McAuley. It contains product reviews and ratings across multiple categories. For our project, we specifically utilized the Electronics dataset. The original data source can be found [here](https://www.kaggle.com/datasets/saurav9786/amazon-product-reviews).
 
 Note: In our data folder we will only include 5000 rows of data for reference because the entire data file is too large to be uploaded on github. 
+
 
 ### Attribute information: \
 -   `userId` : Every user identified with a unique id (First Column)\
@@ -39,7 +41,7 @@ Singular value decomposition (or SVD) is a method of matrix factorization that c
 from surprise import SVD, Dataset, Reader, accuracy
 from surprise.model_selection import train_test_split
 reader = Reader(rating_scale=(1, 5))
-data = Dataset.load_from_df(data[['user_id', 'item_id', 'rating']], reader
+data = Dataset.load_from_df(data[['user_id', 'item_id', 'rating']], reader)
 ```
 
 We then create our training and testing sets in addition to initializing our svd model. 
