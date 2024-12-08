@@ -13,9 +13,10 @@ This dataset is sourced from Kaggle after searching for data that matched the st
 
 The dataset is part of the Amazon Reviews Data repository, which was curated by Julian McAuley. It contains product reviews and ratings across multiple categories. For our project, we specifically utilized the Electronics dataset. The original data source can be found [here](https://www.kaggle.com/datasets/saurav9786/amazon-product-reviews).
 
-Note: In our data folder we will only include 5000 rows of data for reference because the entire data file is too large to be uploaded on github. 
+Note: In our data folder we will only include 5000 rows of data for reference because the entire data file is too large to be uploaded on github.
 
-### Attribute information: \
+### Attribute information: 
+
 -   `userId` : Every user identified with a unique id (First Column)\
 -   `productId` : Every product identified with a unique id (Second Column)\
 -   `Rating` : Rating of the corresponding product by the corresponding user (Third Column)\
@@ -23,13 +24,11 @@ Note: In our data folder we will only include 5000 rows of data for reference be
 
 # Matrix Factorization
 
-With the cleaned data, we can construct the sparse user-item matrix containing information of user's ratings, with unique users as unique rows and unique items as unique columns. The problem with this matrix is that it's too large, and the goal of imputing the missing entries (the unrated items by each user) can be computationally expensive. To tackle this issue, the common approach is to factorize the matrix into two latent matrices, one explaining the characters of users, another explaining the characters of different items. Figure 3 shows the visualization of matrix factorization, given a $m \times n$ matrix, we want to create a $m \times k$ user matrix and a $k \times n$ matrix, with $k << m, n$ so that the product of the user and item matrix is a good estimate of the observed user-item matrix. 
+With the cleaned data, we can construct the sparse user-item matrix containing information of user's ratings, with unique users as unique rows and unique items as unique columns. The problem with this matrix is that it's too large, and the goal of imputing the missing entries (the unrated items by each user) can be computationally expensive. To tackle this issue, the common approach is to factorize the matrix into two latent matrices, one explaining the characters of users, another explaining the characters of different items. Figure 3 shows the visualization of matrix factorization, given a $m \times n$ matrix, we want to create a $m \times k$ user matrix and a $k \times n$ matrix, with $k << m, n$ so that the product of the user and item matrix is a good estimate of the observed user-item matrix.
 
 (graph here)
 
 There are several methods to approach this, one being simply applying Singular Value Decomposition (SVD) and obtaining the user and item matrix directly. This is going to be our benchmark. A more advanced approach is to implement deep learning algorithms to train for the weights (parameters) in the user and item matrix, respectively. To make the product of these two matrices having values close to the observed matrix.
-
-
 
 # Baseline Model(SVD)
 
@@ -42,14 +41,14 @@ reader = Reader(rating_scale=(1, 5))
 data = Dataset.load_from_df(data[['user_id', 'item_id', 'rating']], reader
 ```
 
-We then create our training and testing sets in addition to initializing our svd model. 
+We then create our training and testing sets in addition to initializing our svd model.
 
 ```{python}
 trainset, testset = train_test_split(data, test_size=0.2)
 svd = SVD()
 ```
 
-Next, we compute predictions and analyze the model’s accuracy using RMSE and MAE as our evaluation metrics. 
+Next, we compute predictions and analyze the model’s accuracy using RMSE and MAE as our evaluation metrics.
 
 ```{python}
 predictions = svd.test(testset)
@@ -57,9 +56,8 @@ rmse = accuracy.rmse(predictions)
 mae = accuracy.mae(predictions)
 ```
 
-RMSE: 1.2943
-MAE: 1.0190
+RMSE: 1.2943 MAE: 1.0190
 
-Thus we see that our baseline model, SVD, didn't perform horribly in terms of RMSE and MAE. 
+Thus we see that our baseline model, SVD, performed pretty well in terms of RMSE and MAE.
 
 # Deep Learning
