@@ -23,6 +23,12 @@ Note: In our data folder we will only include 5000 rows of data for reference be
 
 # Matrix Factorization
 
+With the cleaned data, we can construct the sparse user-item matrix containing information of user's ratings, with unique users as unique rows and unique items as unique columns. The problem with this matrix is that it's too large, and the goal of imputing the missing entries (the unrated items by each user) can be computationally expensive. To tackle this issue, the common approach is to factorize the matrix into two latent matrices, one explaining the characters of users, another explaining the characters of different items. Figure 3 shows the visualization of matrix factorization, given a $m \times n$ matrix, we want to create a $m \times k$ user matrix and a $k \times n$ matrix, with $k << m, n$ so that the product of the user and item matrix is a good estimate of the observed user-item matrix. 
+
+(graph here)
+
+There are several methods to approach this, one being simply applying Singular Value Decomposition (SVD) and obtaining the user and item matrix directly. This is going to be our benchmark. A more advanced approach is to implement deep learning algorithms to train for the weights (parameters) in the user and item matrix, respectively. To make the product of these two matrices having values close to the observed matrix.
+
 
 
 # Baseline Model(SVD)
