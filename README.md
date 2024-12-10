@@ -23,7 +23,7 @@ The img folder includes all of the explanatory diagrams used in the vignette, gr
 
 The data folder contains the original dataset, as well as the cleaned dadta we used for our reccomender.  However, it doesn't contain the full dataset (only the first 5000) as the dataset was too big to be uploaded into the respository.  
 
-The vignette_files/libs folder...
+The vignette_files/libs folder is a byproduct of rendering the vignette qmd file.
 
 # Reference List
 
