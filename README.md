@@ -19,8 +19,11 @@ The `vignette.qmd` file will serve as our group's primary vignette document and 
 
 The script included in our repository will contain all code used to build the model along with line-by-line annotations that make it easier to understand or replicate the methods put to use. The chunks included in the primary vignette document will be drawn from this script.
 
-add img and data description.
+The img folder includes all of the explanatory diagrams used in the vignette, graphs produced from our EDA, and graphs produced from the deep learning outputs.
 
+The data folder contains the original dataset, as well as the cleaned dadta we used for our reccomender.  However, it doesn't contain the full dataset (only the first 5000) as the dataset was too big to be uploaded into the respository.  
+
+The vignette_files/libs folder...
 
 # Reference List
 
