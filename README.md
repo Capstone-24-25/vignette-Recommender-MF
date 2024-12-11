@@ -21,7 +21,7 @@ The script included in our repository will contain all of the code used to build
 
 The img folder includes all of the explanatory diagrams used in the vignette, graphs produced from our EDA, and graphs produced from the deep learning outputs.
 
-The data folder contains the original dataset, as well as the cleaned data we used for our recommender.  However, it doesn't contain the full dataset (only the first 5000) as the dataset was too big to be uploaded into the respository.  
+The data folder contains the original dataset, as well as the cleaned data we used for our recommender.  However, it doesn't contain the full dataset (only the first 5000) as the dataset was too big to be uploaded into the repository.  
 
 The vignette_files/libs folder is a byproduct of rendering the `vignette.qmd` file.
 
