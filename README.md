@@ -15,15 +15,15 @@ In this vignette, we explore a more advanced method of building a recommender sy
 # Repository Contents
 
 The data we will be working with is a set of Amazon electronic product reviews that includes a user ID, product ID, rating, and time stamp for each purchase. For our purposes we will not be using the time stamps. 
-The `vignette.qmd` file will serve as our group's primary vignette document and will include specific code chunks and their explanations that teach the reader about the matrix factorization method being shown. Selected results will be shown at the end of the document that illustrate the predictions given by the model. 
+The `vignette.qmd` file will serve as our group's primary vignette document and will include specific code chunks and their explanations that teach the reader about the matrix factorization method. Selected results will be shown at the end of the document that illustrate the predictions given by the model. 
 
-The script included in our repository will contain all code used to build the model along with line-by-line annotations that make it easier to understand or replicate the methods put to use. The chunks included in the primary vignette document will be drawn from this script.
+The script included in our repository will contain all of the code used to build the model along with line-by-line annotations that make it easier to understand or replicate the methods put to use. The chunks included in the primary vignette document will be drawn from this script.
 
 The img folder includes all of the explanatory diagrams used in the vignette, graphs produced from our EDA, and graphs produced from the deep learning outputs.
 
-The data folder contains the original dataset, as well as the cleaned dadta we used for our reccomender.  However, it doesn't contain the full dataset (only the first 5000) as the dataset was too big to be uploaded into the respository.  
+The data folder contains the original dataset, as well as the cleaned data we used for our recommender.  However, it doesn't contain the full dataset (only the first 5000) as the dataset was too big to be uploaded into the respository.  
 
-The vignette_files/libs folder is a byproduct of rendering the vignette qmd file.
+The vignette_files/libs folder is a byproduct of rendering the `vignette.qmd` file.
 
 # Reference List
 
