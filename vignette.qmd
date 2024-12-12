@@ -26,11 +26,11 @@ Note: In our data folder we will only include 5000 rows of data for reference be
 
 ### Exploratory Data Analysis
 
-![Figure 1. Bar Graph of Numbers of Ratings vs Ratings](img/EDA-Rating-distribution.png){fig-align="center" width="414"}
+![Figure 1. Bar Graph of Numbers of Ratings vs Ratings](img/EDA rating distribution.png){fig-align="center" width="424"}
 
 This bar chart illustrates the distribution of numerical ratings across various rating scores. The x-axis represents the ratings, ranging from 0.5 to 5.0 in 0.5 increments, while the y-axis shows the number of ratings, scaled in millions. The highest count of ratings is associated with a rating of 5.0, exceeding 4 million ratings. Other ratings, such as 1.0, 3.0, and 4.0, have significantly fewer ratings in comparison.
 
-![Figure 2. Distribution of Number of Ratings per User](img/EDA-Rating-per-user-distribution.png){fig-align="center" width="421"}
+![Figure 2. Distribution of Number of Ratings per User](img/EDA user rating frequency.png){fig-align="center" width="414"}
 
 This histogram represents how frequently users provide a specific number of ratings. The x-axis denotes the number of ratings given by users, ranging from 0 to 50, and the y-axis shows the count of users, scaled in millions. A vast majority of users provide very few ratings, with the highest concentration around 1 to 2 ratings per user. The frequency of users rapidly decreases as the number of ratings per user increases.
 
@@ -242,5 +242,3 @@ From the results, we can see that the validation RMSE of the best performing mod
 # Conclusion
 
 This project demonstrated the power and flexibility of recommender systems, with a focus on collaborative filtering methods enhanced by deep learning techniques. Starting with a baseline model using Singular Value Decomposition (SVD), we achieved desirable accuracy metrics already, showcasing the effectiveness of traditional matrix factorization. We then extended this approach by implementing a deep learning framework that utilized embedding layers to capture complex user-item interactions. This advanced model allowed for dynamic optimization and better generalization of non-linear relationships. However, the performance compared to the baseline model is very similar, which suggests that a combination of deep learning methods and other methods should be implemented to reach a better performance. Through this exploration, we highlighted the benefits of integrating deep learning into recommendation systems, paving the way for more robust and adaptive solutions in real-world applications.
-
-
